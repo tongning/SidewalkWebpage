@@ -81,16 +81,21 @@ function GraphEdit(d3, _, map, graph, parameters) {
                 return point.y;
             }
         };
-
+    $(document).keypress(function(event) {
+        key = String.fromCharCode(event.which);
+        if (key == "d") {
+            mode = "delete";
+        }
+    })
     // Attach callbacks
     svg.on("mouseup", mouseUp)
         .on("mousemove", mouseMove)
         .on("mousedown", mouseDown);
-    d3.selectAll('.mode-radio-labels').selectAll('input')
+    /*d3.selectAll('.mode-radio-labels').selectAll('input')
         .on("click", function () {
           mode = d3.select(this).property("value");
         });
-
+    */
     /**
      * A callback for a mouse event
      * @param d
