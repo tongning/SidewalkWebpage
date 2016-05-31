@@ -56,6 +56,10 @@ text {
     -moz-border-radius: 3px 3px 0 0;
 }
 
+.newclass{
+    text: purple;
+}
+
 /* Pseudo-classes
 * http://www.w3schools.com/css/css_pseudo_classes.asp */
 .button:hover {
