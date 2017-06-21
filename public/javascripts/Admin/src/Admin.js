@@ -1200,6 +1200,85 @@ function Admin(_, $, c3, turf) {
                 };
                 vega.embed("#label-count-chart", chart, opt, function(error, results) {});
             });
+            $.getJSON("/userapi/completedMissionCounts/all", function (data) {
+                data[0].sort(function(a, b) {return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0);} );
+                var sum = 0.0;
+                for (var j = 0; j < data[0].length; j++) {
+                    sum += data[0][j].count;
+                }
+                var mean = sum / data[0].length;
+                var i = data[0].length / 2;
+                var median = (data[0].length / 2) % 1 == 0 ? (data[0][i - 1].count + data[0][i].count) / 2 : data[0][Math.floor(i)].count;
+
+                var std = 0;
+                for(var k = 0; k < data[0].length; k++) {
+                    std += Math.pow(data[0][k].count - mean, 2);
+                }
+                std /= data[0].length;
+                std = Math.sqrt(std);
+                $("#missions-std").html((std).toFixed(0) + " Missions");
+                console.log(data);
+// for users that complete at least one mission
+                var chart = {
+                    "height": 300,
+                    "width": 600,
+                    "data": {"values": data[0]},
+                    "layer": [
+                        {
+                            "mark": "bar",
+                            "encoding": {
+                                "x": {
+                                    "field": "count",
+                                    "type": "quantitative",
+                                    "axis": {"title": "# Missions per Registered User", "labelAngle": 0},
+                                    "bin": {"maxbins": 40}
+                                },
+                                "y": {
+                                    "aggregate": "count",
+                                    "field": "*",
+                                    "type": "quantitative",
+                                    "axis": {
+                                        "title": "Counts"
+                                    }
+                                }
+                            }
+                        },
+                        { // creates lines marking summary statistics
+                            "data": {"values": [
+                                {"stat": "mean", "value": mean}, {"stat": "median", "value": median}]
+                            },
+                            "mark": "rule",
+                            "encoding": {
+                                "x": {
+                                    "field": "value", "type": "quantitative",
+                                    "axis": {"labels": false, "ticks": false, "title": ""},
+                                    "scale": {"domain": [0, data[0][data[0].length-1].count]}
+                                },
+                                "color": {
+                                    "field": "stat", "type": "nominal", "scale": {"range": ["pink", "orange"]},
+                                    "legend": {
+                                        "title": "Summary Stats"
+                                    }
+                                },
+                                "size": {
+                                    "value": 2
+                                }
+                            }
+                        }
+                    ],
+                    "resolve": {"x": {"scale": "independent"}},
+                    "config": {
+                        "axis": {
+                            "titleFontSize": 16
+                        }
+                    }
+                };
+                var opt = {
+                    "mode": "vega-lite",
+                    "actions": false
+                };
+                vega.embed("#mission-count-chart", chart, opt, function(error, results) {});
+            });
             self.graphsLoaded = true;
         }
     });
