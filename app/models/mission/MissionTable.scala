@@ -118,7 +118,7 @@ object MissionTable {
   }
 
   /**
-    * Get the list of the completed tasks in the given region for the given user
+    * Get the list of the completed missions in the given region for the given user
     *
     * @param userId User's UUID
     * @param regionId region Id
