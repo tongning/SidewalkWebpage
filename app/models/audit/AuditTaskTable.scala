@@ -11,6 +11,7 @@ import models.utils.MyPostgresDriver
 import models.utils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions.{DBUser, UserTable}
 import models.label.{LabelTable, LabelTypeTable}
+import models.mission.{MissionUser, MissionUserTable}
 import play.api.libs.json._
 import play.api.Play.current
 import play.extras.geojson
@@ -19,7 +20,8 @@ import scala.slick.lifted.ForeignKeyQuery
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import scala.util.Random
 
-case class AuditTask(auditTaskId: Int, amtAssignmentId: Option[Int], userId: String, streetEdgeId: Int, taskStart: Timestamp, taskEnd: Option[Timestamp], completed: Boolean)
+case class AuditTask(auditTaskId: Int, amtAssignmentId: Option[Int], userId: String, streetEdgeId: Int,
+                     taskStart: Timestamp, taskEnd: Option[Timestamp], completed: Boolean, missionUserId: Option[Int])
 case class NewTask(edgeId: Int, geom: LineString, x1: Float, y1: Float, x2: Float, y2: Float, taskStart: Timestamp, completed: Boolean)  {
   /**
     * This method converts the data into the GeoJSON format
@@ -54,14 +56,18 @@ class AuditTaskTable(tag: Tag) extends Table[AuditTask](tag, Some("sidewalk"), "
   def taskStart = column[Timestamp]("task_start", O.NotNull)
   def taskEnd = column[Option[Timestamp]]("task_end", O.Nullable)
   def completed = column[Boolean]("completed", O.NotNull)
+  def missionUserId = column[Option[Int]]("mission_user_id", O.Nullable)
 
-  def * = (auditTaskId, amtAssignmentId, userId, streetEdgeId, taskStart, taskEnd, completed) <> ((AuditTask.apply _).tupled, AuditTask.unapply)
+  def * = (auditTaskId, amtAssignmentId, userId, streetEdgeId, taskStart, taskEnd, completed, missionUserId) <> ((AuditTask.apply _).tupled, AuditTask.unapply)
 
   def streetEdge: ForeignKeyQuery[StreetEdgeTable, StreetEdge] =
     foreignKey("audit_task_street_edge_id_fkey", streetEdgeId, TableQuery[StreetEdgeTable])(_.streetEdgeId)
 
   def user: ForeignKeyQuery[UserTable, DBUser] =
     foreignKey("audit_task_user_id_fkey", userId, TableQuery[UserTable])(_.userId)
+
+  def missionUser: ForeignKeyQuery[MissionUserTable, MissionUser] =
+    foreignKey("audit_task_mission_user_id_fkey", missionUserId, TableQuery[MissionUserTable])(_.missionUserId)
 }
 
 
@@ -72,7 +78,7 @@ object AuditTaskTable {
   import MyPostgresDriver.plainImplicits._
 
   implicit val auditTaskConverter = GetResult[AuditTask](r => {
-    AuditTask(r.nextInt, r.nextIntOption, r.nextString, r.nextInt, r.nextTimestamp, r.nextTimestampOption, r.nextBoolean)
+    AuditTask(r.nextInt, r.nextIntOption, r.nextString, r.nextInt, r.nextTimestamp, r.nextTimestampOption, r.nextBoolean, r.nextIntOption)
   })
 
 //  case class NewTask(edgeId: Int, geom: LineString, x1: Float, y1: Float, x2: Float, y2: Float, taskStart: Timestamp, completed: Boolean)
@@ -307,6 +313,8 @@ object AuditTaskTable {
   /**
    * get a new task for the user
    *
+   * TODO change param from username to userId
+   *
    * Reference for creating java.sql.timestamp
    * http://stackoverflow.com/questions/308683/how-can-i-get-the-current-date-and-time-in-utc-or-gmt-in-java
    * http://alvinalexander.com/java/java-timestamp-example-current-time-now
@@ -315,7 +323,7 @@ object AuditTaskTable {
    * http://stackoverflow.com/questions/14425844/why-does-slick-generate-a-subquery-when-take-method-is-called
    * http://stackoverflow.com/questions/14920153/how-to-write-nested-queries-in-select-clause
    *
-   * @param username User name. Todo. Change it to user id
+   * @param username User name
    * @return
    */
   def selectANewTask(username: String): NewTask = db.withSession { implicit session =>
@@ -353,6 +361,7 @@ object AuditTaskTable {
 
     val e: StreetEdge = Random.shuffle(edges).head
 
+    // Increment the assignment count and return the task
     StreetEdgeAssignmentCountTable.incrementAssignment(e.streetEdgeId)
     NewTask(e.streetEdgeId, e.geom, e.x1, e.y1, e.x2, e.y2, timestamp, completed=false)
   }
@@ -408,7 +417,7 @@ object AuditTaskTable {
   }
 
   /**
-   * et a task that is in a given region
+   * Get a task that is in a given region
    *
    * @param regionId region id
    * @param user User object. Todo. Change this to user id.
@@ -454,7 +463,7 @@ object AuditTaskTable {
   }
 
   /**
-    * Get tasks in the region
+    * Get completed tasks in the region
     *
     * @param regionId Region id
     * @return
@@ -492,7 +501,7 @@ object AuditTaskTable {
   }
 
   /**
-    * Get tasks in the region
+    * Get all tasks in the region
     *
     * @param regionId Region id
     * @return
@@ -517,7 +526,7 @@ object AuditTaskTable {
   }
 
   /**
-    * Get tasks in the region
+    * Get all assigned to a user tasks in the region
     *
     * @param regionId Region id
     * @param userId User id
@@ -562,14 +571,14 @@ object AuditTaskTable {
 
 
   /**
-   * Saves a new audit task.
-   *
-   * Reference for rturning the last inserted item's id
-   * http://stackoverflow.com/questions/21894377/returning-autoinc-id-after-insert-in-slick-2-0
+    * Saves a new audit task.
+    *
+    * Reference for returning the last inserted item's id
+    * http://stackoverflow.com/questions/21894377/returning-autoinc-id-after-insert-in-slick-2-0
     *
     * @param completedTask completed task
-   * @return
-   */
+    * @return
+    */
   def save(completedTask: AuditTask): Int = db.withTransaction { implicit session =>
     val auditTaskId: Int =
       (auditTasks returning auditTasks.map(_.auditTaskId)) += completedTask
