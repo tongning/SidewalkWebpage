@@ -51,4 +51,17 @@ object MissionUserTable {
       (missionUsers returning missionUsers.map(_.missionUserId)) += missionUser
     missionUserId
   }
+
+  /**
+    * Update the `completed` column of the specified mission_user row.
+    * Reference: http://slick.lightbend.com/doc/2.0.0/queries.html#updating
+    *
+    * @param missionUserId Audit task id
+    * @param completed A completed flag
+    * @return
+    */
+  def updateCompleted(missionUserId: Int, completed: Boolean) = db.withTransaction { implicit session =>
+    val q = for { missionUser <- missionUsers if missionUser.missionUserId === missionUserId } yield missionUser.completed
+    q.update(Some(completed))
+  }
 }
