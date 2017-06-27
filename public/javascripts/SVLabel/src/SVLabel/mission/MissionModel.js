@@ -51,7 +51,8 @@ function MissionModel () {
                     distanceFt: missions[i].distance_ft,
                     distanceMi: missions[i].distance_mi,
                     coverage: missions[i].coverage,
-                    isCompleted: missions[i].is_completed
+                    isCompleted: missions[i].is_completed,
+                    missionUserId: mission[i].missionUserId
                 };
                 self.createAMission(missionParameters);
             }

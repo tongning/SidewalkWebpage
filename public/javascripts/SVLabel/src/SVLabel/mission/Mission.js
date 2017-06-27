@@ -38,6 +38,7 @@ function Mission(parameters) {
         if ("distanceMi" in parameters) setProperty("distanceMi", parameters.distanceMi);
         if ("coverage" in parameters) setProperty("coverage", parameters.coverage);
         if ("isCompleted" in parameters) setProperty("isCompleted", parameters.isCompleted);
+        if ("missionUserId" in parameters) setProperty("missionUserId", parameters.missionUserId);
 
         if ("label" in parameters) {
             var instruction, completionMessage, badgeURL;

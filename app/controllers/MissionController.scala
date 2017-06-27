@@ -48,7 +48,8 @@ class MissionController @Inject() (implicit val env: Environment[User, SessionAu
             "distance" -> m.distance,
             "distance_ft" -> m.distance_ft,
             "distance_mi" -> m.distance_mi,
-            "coverage" -> m.coverage)
+            "coverage" -> m.coverage,
+            "mission_user_id" -> m.missionUserId)
         )
 
         val incompleteMissionJsonObjects: List[JsObject] = incompleteMissions.map( m =>
@@ -60,7 +61,8 @@ class MissionController @Inject() (implicit val env: Environment[User, SessionAu
             "distance" -> m.distance,
             "distance_ft" -> m.distance_ft,
             "distance_mi" -> m.distance_mi,
-            "coverage" -> m.coverage)
+            "coverage" -> m.coverage,
+            "mission_user_id" -> m.missionUserId)
         )
 
         val concatenated = completedMissionJsonObjects ++ incompleteMissionJsonObjects
@@ -76,7 +78,8 @@ class MissionController @Inject() (implicit val env: Environment[User, SessionAu
             "distance" -> m.distance,
             "distance_ft" -> m.distance_ft,
             "distance_mi" -> m.distance_mi,
-            "coverage" -> m.coverage)
+            "coverage" -> m.coverage,
+            "mission_user_id" -> m.missionUserId)
         )
 
         Future.successful(Ok(JsArray(missionJsonObjects)))
