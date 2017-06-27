@@ -128,7 +128,7 @@ function Mission(parameters) {
     }
 
     /**
-     * Set the property to complete
+     * Set the isCompleted property to true
      */
     function complete () {
         // Play the animation and audio effect after task completion.
