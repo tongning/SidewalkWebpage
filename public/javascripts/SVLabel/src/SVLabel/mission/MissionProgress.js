@@ -75,6 +75,13 @@ function MissionProgress (svl, gameEffectModel, missionModel, modalModel, neighb
         }
     };
 
+    /**
+     * Checks if the mission is complete, and updates to a new mission if it is.
+     *
+     * @param mission
+     * @param neighborhood
+     * @private
+     */
     this._checkMissionComplete = function (mission, neighborhood) {
         if (mission.getMissionCompletionRate() > 0.999) {
             this._completeTheCurrentMission(mission, neighborhood);
@@ -99,6 +106,8 @@ function MissionProgress (svl, gameEffectModel, missionModel, modalModel, neighb
 
         if (nextMission == null) throw new Error("No missions available");
 
+        // if the mission has not yet been started, start it and create entry in mission_user table
+
         missionContainer.setCurrentMission(nextMission);
         var nextMissionNeighborhood = neighborhoodContainer.get(nextMission.getProperty("regionId"));
 
@@ -113,7 +122,9 @@ function MissionProgress (svl, gameEffectModel, missionModel, modalModel, neighb
     };
 
     /**
-     * Todo. This method should be moved to other place. Maybe NeighborhoodModel...
+     * Ends task in current neighborhood and switches to a new neighborhood.
+     * TODO. This method should be moved to other place. Maybe NeighborhoodModel...
+     *
      * @param neighborhood
      * @private
      */

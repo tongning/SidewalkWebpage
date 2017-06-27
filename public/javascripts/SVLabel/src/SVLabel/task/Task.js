@@ -23,7 +23,7 @@ function Task (geojson, currentLat, currentLng) {
     };
 
     /**
-     * This method takes a task parameters and set up the current task.
+     * This method takes task parameters and sets up the current task.
      * @param geojson Description of the next task in json format.
      * @param currentLat Current latitude
      * @param currentLng Current longitude

@@ -131,6 +131,8 @@ function Tracker () {
     };
 
     /**
+     * Adds an action, and posts the current status of the audit task to the database if there a lot of actions.
+     *
      * @param action: the action to be stored in the database
      * @param notes: (optional) the notes field in the database
      * @param extraData: (optional) extra data that should not be stored in the notes field in db

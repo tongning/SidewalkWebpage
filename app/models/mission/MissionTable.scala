@@ -111,7 +111,7 @@ object MissionTable {
   def selectCompletedMissionsByAUser(userId: UUID): List[Mission] = db.withSession { implicit session =>
     val _missions = for {
       (_missions, _missionUsers) <- missionsWithoutDeleted.innerJoin(missionUsers).on(_.missionId === _.missionId)
-      if _missionUsers.userId === userId.toString
+      if _missionUsers.userId === userId.toString //&& (_missionUsers.completed === true || _missionUsers.completed.isNull)
     } yield _missions
 
     _missions.list.groupBy(_.missionId).map(_._2.head).toList
@@ -175,7 +175,7 @@ object MissionTable {
   }
 
   /**
-    * Get a list of incomplete missions in the give region for the given user
+    * Get a list of incomplete missions in the given region for the given user
     *
     * @param userId User's UUID
     * @param regionId Region Id

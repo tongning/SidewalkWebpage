@@ -76,7 +76,7 @@ class TaskController @Inject() (implicit val env: Environment[User, SessionAuthe
   }
 
   /**
-    * Insert or update the submitted audit task in the database
+    * Insert or update the submitted audit task's taskEnd field in the database
     * @param auditTask
     * @return
     */
@@ -104,6 +104,13 @@ class TaskController @Inject() (implicit val env: Environment[User, SessionAuthe
     }
   }
 
+  /**
+    * If the audit task has been completed, update that field in the database. Otherwise, do nothing.
+    *
+    * @param auditTaskId
+    * @param auditTask
+    * @param incomplete
+    */
   def updateAuditTaskCompleteness(auditTaskId: Int, auditTask: TaskSubmission, incomplete: Option[IncompleteTaskSubmission]): Unit = {
     if (auditTask.completed.isDefined && auditTask.completed.get) {
       AuditTaskTable.updateCompleted(auditTaskId, completed=true)

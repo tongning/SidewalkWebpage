@@ -160,6 +160,7 @@ function TaskContainer (navigationModel, neighborhoodModel, streetViewService, s
     /**
      * Request the server to populate tasks
      * Todo. Move this to somewhere else. TaskModel?
+     *
      * @param regionId {number} Region id
      * @param callback A callback function
      * @param async {boolean}
@@ -193,6 +194,7 @@ function TaskContainer (navigationModel, neighborhoodModel, streetViewService, s
 
     /**
      * Find tasks (i.e., street edges) in the region that are connected to the given task.
+     * 
      * @param regionId {number} Region id
      * @param taskIn {object} Task
      * @param threshold {number} Distance threshold
@@ -354,7 +356,7 @@ function TaskContainer (navigationModel, neighborhoodModel, streetViewService, s
         var neighborhood = neighborhoodModel.currentNeighborhood();
         var currentNeighborhoodId = neighborhood.getProperty("regionId");
 
-        // Seek the incomplete street edges (tasks) that are connected to the task that has been complted.
+        // Seek the incomplete street edges (tasks) that are connected to the task that has been completed.
         // If there aren't any connected tasks that are incomplete, randomly select a task from
         // any of the incomplete tasks in the neighborhood. If that is empty, return null.
         var candidateTasks = self._findConnectedTask(currentNeighborhoodId, finishedTask, null, null);

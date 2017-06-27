@@ -23,7 +23,8 @@ function Mission(parameters) {
             distance: null,
             distanceFt: null,
             distanceMi: null,
-            coverage: null
+            coverage: null,
+            missionUserId: null
         },
         _tasksForTheMission = [],
         labelCountsAtCompletion;

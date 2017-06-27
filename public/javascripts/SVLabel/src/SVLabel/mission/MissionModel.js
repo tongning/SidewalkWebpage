@@ -13,6 +13,7 @@ function MissionModel () {
             }
         }
 
+
         var url = "/mission",
             async = true;
         $.ajax({
