@@ -103,7 +103,7 @@ object MissionTable {
 
 
   /**
-    * Get a list of all the completed tasks
+    * Get a list of all missions completed by a user.
     *
     * @param userId User's UUID
     * @return

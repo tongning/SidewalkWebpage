@@ -156,8 +156,10 @@ function Mission(parameters) {
     }
 
     /**
-     * Total line distance of the completed tasks in this mission
+     * Gets total line distance of the completed tasks in this mission, in the specified distance unit.
+     *
      * @param unit
+     * @return {number}
      */
     function completedLineDistance (unit) {
         if (!unit) unit = "kilometers";
@@ -168,15 +170,17 @@ function Mission(parameters) {
 
     /**
      * This method returns the label count object
-     * @returns {*}
+     *
+     * @return {*}
      */
     function getLabelCount () {
         return labelCountsAtCompletion;
     }
 
     /**
-     * Compute and return the mission completion rate
-     * @returns {number}
+     * Compute and return the mission completion rate, in the specified distance unit.
+     *
+     * @return {number}
      */
     function getMissionCompletionRate (unit) {
         if (!unit) unit = "kilometers";
