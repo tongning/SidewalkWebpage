@@ -15,7 +15,7 @@ function MissionContainer (statusFieldMission, missionModel, taskModel) {
 
     /*
     This variable keeps the distance of completed missions minus completed audits to fix the problem that
-    is discussed here: https://github.com/ProjectSidewalk/SidewalkWebpage/issues/297#issuecomment-259697107
+    is discussed here: https://github.com/ProjectSidewalk/SidewalkWebpage/issues/297#issuecomment-259535021
      */
     var tasksMissionsOffset= 0;
 
