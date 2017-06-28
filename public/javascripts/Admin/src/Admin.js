@@ -949,6 +949,8 @@ function Admin(_, $, c3, turf) {
 
             });
             $.getJSON("/contribution/auditCounts/all", function (data) {
+                data[0].sort(function(a, b) {return (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0);} );
+
                 data[0].sort(function(a, b) {return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0);} );
                 var sum = 0;
                 for (var j = 0; j < data[0].length; j++) {
@@ -966,22 +968,34 @@ function Admin(_, $, c3, turf) {
                 std = Math.sqrt(std);
                 $("#audit-std").html((std).toFixed(1) + " Street Audits");
 
+                data[0].sort(function(a, b) {return (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0);} );
+                console.log(data[0]);
                 var chart = {
                     "data": {"values": data[0]},
                     "hconcat": [
                         {
                             "height": 300,
-                            "width": 550,
+                            "width": 875,
                             "layer": [
                                 {
-                                    "mark": "area",
+                                    "mark": {"type": "bar"},
                                     "encoding": {
                                         "x": {
                                             "field": "date",
                                             "type": "temporal",
-                                            "axis": {"title": "Date", "labelAngle": 0}
+                                            "timeUnit": "yearmonth",
+                                            "axis": {"title": "Date", "labelAngle": 0//, "values":
+                                            // [{"year":2015,"month":11},{"year":2016,"month":1},
+                                            //     {"year":2016,"month":3},
+                                            //     {"year":2016,"month":5},{"year":2016,"month":7},
+                                            //     {"year":2016,"month":9},
+                                            //     {"year":2016,"month":11},{"year":2017,"month":1},
+                                            //     {"year":2017,"month":3},
+                                            //     {"year":2017,"month":5},{"year":2017,"month":7}]
+                                            }
                                         },
                                         "y": {
+                                            "aggregate": "sum",
                                             "field": "count",
                                             "type": "quantitative",
                                             "axis": {

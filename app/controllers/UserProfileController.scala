@@ -11,6 +11,7 @@ import formats.json.TaskFormats._
 import forms._
 import models.audit.{AuditTaskInteraction, AuditTaskInteractionTable, AuditTaskTable, InteractionWithLabel}
 import models.label.LabelTable
+import models.street.StreetEdgeTable
 import models.user.User
 import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc.{BodyParsers, RequestHeader, Result}
@@ -240,8 +241,11 @@ class UserProfileController @Inject() (implicit val env: Environment[User, Sessi
 
   def getAllAuditCounts = UserAwareAction.async { implicit request =>
     val auditCounts = AuditTaskTable.auditCounts
-    val json = Json.arr(auditCounts.map(x => Json.obj(
-      "date" -> x.date, "count" -> x.count
+    val dailyDists = StreetEdgeTable.streetDistanceAuditedByDate(1)
+
+    val json = Json.arr(dailyDists.map(x => Json.obj(
+//      "date" -> x.date, "count" -> x.count
+      "date" -> x._1, "count" -> x._2
     )))
     Future.successful(Ok(json))
   }

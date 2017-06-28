@@ -208,6 +208,65 @@ object StreetEdgeTable {
     ratePerDay.map(pair => (format1.format(pair._1.getTime), pair._2))
   }
 
+
+  /**
+    * Computes street distance audited per day.
+    *
+    * author: Mikey Saugstad
+    * date: 06/16/2017
+    *
+    * @param auditCount
+    * @return List[(String,Float)] representing dates and distances
+    */
+  def streetDistanceAuditedByDate(auditCount: Int): Seq[(String, Float)] = db.withSession { implicit session =>
+    // join the street edges and audit tasks
+    // TODO figure out how to do this w/out doing the join twice
+    val edges = for {
+      (_streetEdges, _auditTasks) <- streetEdgesWithoutDeleted.innerJoin(completedAuditTasks).on(_.streetEdgeId === _.streetEdgeId)
+    } yield _streetEdges
+    val audits = for {
+      (_streetEdges, _auditTasks) <- streetEdgesWithoutDeleted.innerJoin(completedAuditTasks).on(_.streetEdgeId === _.streetEdgeId)
+    } yield _auditTasks
+
+    // get distances of street edges associated with their edgeId
+    val edgeDists: Map[Int, Float] = edges.groupBy(x => x).map(g => (g._1.streetEdgeId, g._1.geom.transform(26918).length)).list.toMap
+
+    // Filter out group of edges with the size less than the passed `auditCount`, picking 1 rep from each group
+    // TODO pick audit with earliest timestamp
+    val uniqueEdgeDists: List[(Option[Timestamp], Option[Float])] = (for ((eid, groupedAudits) <- audits.list.groupBy(_.streetEdgeId)) yield {
+      if (auditCount > 0 && groupedAudits.size >= auditCount) {
+        Some((groupedAudits.head.taskEnd, edgeDists.get(eid)))
+      } else {
+        None
+      }
+    }).toList.flatten
+
+    // round the timestamps down to just the date (year-month-day)
+    val dateRoundedDists: List[(Calendar, Double)] = uniqueEdgeDists.map({
+      pair => {
+        var c : Calendar = Calendar.getInstance()
+        c.setTimeInMillis(pair._1.get.getTime)
+        c.set(Calendar.HOUR_OF_DAY, 0)
+        c.set(Calendar.MINUTE, 0)
+        c.set(Calendar.SECOND, 0)
+        c.set(Calendar.MILLISECOND, 0)
+        (c, pair._2.get * 0.000621371)
+      }})
+
+    // sum the distances by date
+    val distsPerDay: List[(Calendar, Double)] = dateRoundedDists.groupBy(_._1).mapValues(_.map(_._2).sum).view.force.toList
+
+    // sort the list by date
+    val sortedEdges: Seq[(Calendar, Double)] =
+      scala.util.Sorting.stableSort(distsPerDay, (e1: (Calendar,Double), e2: (Calendar, Double)) => e1._1.getTimeInMillis < e2._1.getTimeInMillis).toSeq
+
+    // format the calendar date in the correct format and return the (date,distance) pair
+    val format1 = new SimpleDateFormat("yyyy-MM-dd")
+    sortedEdges.map(pair => (format1.format(pair._1.getTime), pair._2.toFloat))
+  }
+
+
+
   /**
     * Count the number of streets that have been audited at least a given number of times
     *
