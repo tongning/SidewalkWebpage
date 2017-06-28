@@ -966,7 +966,7 @@ function Admin(_, $, c3, turf) {
                 }
                 std /= data[0].length;
                 std = Math.sqrt(std);
-                $("#audit-std").html((std).toFixed(1) + " Street Audits");
+                $("#audit-std").html((std).toFixed(1) + " Miles");
 
                 data[0].sort(function(a, b) {return (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0);} );
                 console.log(data[0]);
@@ -999,7 +999,7 @@ function Admin(_, $, c3, turf) {
                                             "field": "count",
                                             "type": "quantitative",
                                             "axis": {
-                                                "title": "# Street Audits per Day"
+                                                "title": "Miles audited per month"
                                             }
                                         }
                                     }
