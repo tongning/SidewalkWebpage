@@ -13,7 +13,6 @@ sources in (Compile,doc) := Seq.empty
 publishArtifact in (Compile, packageDoc) := false
 
 resolvers += "media.javax" at "http://maven.geotoolkit.org"
-resolvers += Resolver.sonatypeRepo("snapshots")
 
 resolvers ++= Seq(
   "Atlassian Releases" at "https://maven.atlassian.com/public/",
