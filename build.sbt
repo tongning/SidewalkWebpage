@@ -17,7 +17,7 @@ resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 resolvers ++= Seq(
-  "media.javax" at "http://maven.geotoolkit.org"
+  "media.javax" at "http://maven.geotoolkit.org",
   "geosolutions" at "http://maven.geo-solutions.it/",
   "osgeo" at "http://download.osgeo.org/webdav/geotools/"
 )
