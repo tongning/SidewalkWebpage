@@ -18,7 +18,8 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 resolvers ++= Seq(
   "geosolutions" at "http://maven.geo-solutions.it/",
-  "osgeo" at "http://download.osgeo.org/webdav/geotools/"
+  "osgeo" at "http://download.osgeo.org/webdav/geotools/",
+  "media.javax" at "http://maven.geotoolkit.org"
 )
 
 libraryDependencies ++= Seq(
