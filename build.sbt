@@ -15,6 +15,8 @@ publishArtifact in (Compile, packageDoc) := false
 resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
 
 resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers +=  "OpenIMAJ Maven Repo" at "http://maven.openimaj.org"
+resolvers += "Semantic Desktop" at "http://aperture.sourceforge.net/maven"
 
 resolvers ++= Seq(
   "geosolutions" at "http://maven.geo-solutions.it/",
