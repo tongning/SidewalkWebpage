@@ -23,7 +23,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "javax.media" % "jai_core" % "1.1.3"
+  "javax.media" % "jai_core" % "1.1.3",
   jdbc,
   anorm,
   cache,
