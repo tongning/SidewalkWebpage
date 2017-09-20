@@ -19,7 +19,8 @@ resolvers += "media.javax" at "http://download.osgeo.org/webdav/geotools"
 
 resolvers ++= Seq(
   "geosolutions" at "http://maven.geo-solutions.it/",
-  "osgeo" at "http://download.osgeo.org/webdav/geotools/"
+  "Open Source Geospatial Foundation Repository" at "http://download.osgeo.org/webdav/geotools/",
+  "public" at "https://repo1.maven.org/maven2/" // default repo
 )
 
 libraryDependencies ++= Seq(
