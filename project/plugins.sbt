@@ -1,5 +1,5 @@
 logLevel := Level.Warn
-
+resolvers += "media.javax" at "http://download.osgeo.org/webdav/geotools"
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 // The Sonatype snapshots repository
