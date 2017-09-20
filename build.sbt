@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.3.0",
   "org.webjars" % "bootstrap" % "3.1.1",
   "org.webjars" % "jquery" % "1.11.0",
-  "net.codingwell" %% "scala-guice" % "4.0.0-beta5",
+  "net.codingwell" %% "scala-guice" % "4.1.0",
   "com.mohiva" %% "play-silhouette-testkit" % "2.0" % "test",
   "com.typesafe.play.extras" %% "play-geojson" % "1.2.0",
   "com.github.tminglei" %% "slick-pg" % "0.8.2",
